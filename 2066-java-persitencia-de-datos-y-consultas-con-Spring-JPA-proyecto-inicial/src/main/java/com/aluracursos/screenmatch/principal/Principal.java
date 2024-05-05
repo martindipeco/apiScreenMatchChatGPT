@@ -4,6 +4,7 @@ import ch.qos.logback.core.encoder.JsonEscapeUtil;
 import com.aluracursos.screenmatch.model.DatosSerie;
 import com.aluracursos.screenmatch.model.DatosTemporadas;
 import com.aluracursos.screenmatch.model.Serie;
+import com.aluracursos.screenmatch.repository.SerieRepository;
 import com.aluracursos.screenmatch.service.ApiKey;
 import com.aluracursos.screenmatch.service.ConsumoAPI;
 import com.aluracursos.screenmatch.service.ConvierteDatos;
@@ -21,6 +22,11 @@ public class Principal {
     private final String API_KEY_CHATGPT = ApiKey.getApiKeyChatGpt();
     private ConvierteDatos conversor = new ConvierteDatos();
     private List<DatosSerie> listaDatosSerie = new ArrayList<>();
+    private SerieRepository repositorio;
+
+    public Principal(SerieRepository serieRepository) {
+        this.repositorio = serieRepository;
+    }
 
     public void muestraElMenu() {
         var opcion = -1;
@@ -78,18 +84,22 @@ public class Principal {
     }
     private void buscarSerieWeb() {
         DatosSerie datos = getDatosSerie();
-        listaDatosSerie.add(datos);
+        Serie serie = new Serie(datos);
+        repositorio.save(serie);
+        //listaDatosSerie.add(datos);
         System.out.println(datos);
     }
 
     private void mostrarSeriesBuscadas()
     {
-        List<Serie> listaSeries = new ArrayList<>();
-        listaSeries = listaDatosSerie.stream().map(d -> new Serie(d)).collect(Collectors.toList());
+        //método anterior
+        //List<Serie> listaSeries = new ArrayList<>();
+        //listaSeries = listaDatosSerie.stream().map(d -> new Serie(d)).collect(Collectors.toList());
 
+        List<Serie> listaSeries = repositorio.findAll();
         //mostrar agrupados por genero
-        listaSeries.stream()
-                .sorted(Comparator.comparing(Serie::getGenero)).forEach(System.out::println);
+        listaSeries.stream().sorted(Comparator.comparing(Serie::getGenero)).forEach(System.out::println);
+
 
     }
 

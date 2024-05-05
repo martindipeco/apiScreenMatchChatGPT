@@ -2,19 +2,29 @@ package com.aluracursos.screenmatch.model;
 
 import com.aluracursos.screenmatch.service.ConsultaChatGPT;
 import com.fasterxml.jackson.annotation.JsonAlias;
+import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.OptionalDouble;
-
+@Entity
+@Table(name = "series") //polémico. esta línea existe solo porque no quiero que mi tabla se llame "serie" en singular
 public class Serie {
-
+    @Id //aviso que el atributo que está abajo será la primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //para que sea autoincremental
+    private Long id; //agrego este atributo para poder tener el "id" en la tabla - pero ¿no debería ser id_serie?
+    @Column(unique = true) // por default es false, aviso que quiero que no haya títulos repetidos
     private String titulo;
     private Integer totalTemporadas;
     private Double evaluacion;
     private String poster;
+    @Enumerated(EnumType.STRING) //debo avisar que tengo enum, y que cada value lo traiga como string
     private Categoria genero;
     private String actores;
     private String sinopsis;
+    @Transient //indico que por ahora no mapee la lista
+    private List<Episodio> listaEpisodios;
 
+    public Serie(){}
     public Serie(DatosSerie datosSerie)
     {
         this.titulo = datosSerie.titulo();
@@ -26,6 +36,8 @@ public class Serie {
         this.sinopsis = datosSerie.sinopsis(); //ConsultaChatGPT.obtenerTraduccion(datosSerie.sinopsis());
     }
 
+    public Long getId() {return id;}
+    public void setId(Long id) {this.id = id;}
     public String getTitulo() {
         return titulo;
     }

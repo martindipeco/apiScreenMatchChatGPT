@@ -1,14 +1,24 @@
 package com.aluracursos.screenmatch.model;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-
+@Entity
+@Table(name = "episodios")
 public class Episodio {
+    @Id //aviso que el atributo que está abajo será la primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //para que sea autoincremental
+    private Long id; //agrego este atributo para poder tener el "id" en la tabla - pero ¿no debería ser id_epsisodio?
     private Integer temporada;
     private String titulo;
     private Integer numeroEpisodio;
     private Double evaluacion;
     private LocalDate fechaDeLanzamiento;
+    @ManyToOne //a la inversa de Serie, que es oneToMany
+    private Serie serie;
+
+    public Episodio(){}
 
     public Episodio(Integer numero, DatosEpisodio d) {
         this.temporada = numero;
@@ -65,6 +75,14 @@ public class Episodio {
 
     public void setFechaDeLanzamiento(LocalDate fechaDeLanzamiento) {
         this.fechaDeLanzamiento = fechaDeLanzamiento;
+    }
+
+    public Serie getSerie() {
+        return serie;
+    }
+
+    public void setSerie(Serie serie) {
+        this.serie = serie;
     }
 
     @Override

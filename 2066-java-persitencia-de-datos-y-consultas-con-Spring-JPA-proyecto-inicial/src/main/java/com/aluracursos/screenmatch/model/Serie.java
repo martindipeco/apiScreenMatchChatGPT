@@ -21,7 +21,7 @@ public class Serie {
     private Categoria genero;
     private String actores;
     private String sinopsis;
-    @Transient //indico que por ahora no mapee la lista
+    @OneToMany(mappedBy = "serie") //serie se refiere al atributo en la clase Episodio
     private List<Episodio> listaEpisodios;
 
     public Serie(){}

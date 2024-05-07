@@ -32,9 +32,10 @@ public class Principal {
         var opcion = -1;
         while (opcion != 0) {
             var menu = """
-                    1 - Buscar series 
+                    1 - Buscar series (nueva consulta via API)
                     2 - Buscar episodios
                     3 - Mostrar series buscadas
+                    4 - Buscar serie por título (ya guardadas en DB)
                                   
                     0 - Salir
                     """;
@@ -51,6 +52,9 @@ public class Principal {
                     break;
                 case 3:
                     mostrarSeriesBuscadas();
+                    break;
+                case 4:
+                    buscarSeriesPorTitulo();
                     break;
 
                 case 0:
@@ -121,6 +125,21 @@ public class Principal {
         listaSeries.stream().sorted(Comparator.comparing(Serie::getGenero)).forEach(System.out::println);
     }
 
-
+    private void buscarSeriesPorTitulo()
+    {
+        System.out.println("Ingrese nombre de la serie");
+        var nombreSerie = teclado.nextLine();
+        //contrastar input via derived query
+        Optional<Serie> serieBuscada = repositorio.findByTituloContainsIgnoreCase(nombreSerie);
+        //si hay match, agregar a series buscadas
+        if(serieBuscada.isPresent())
+        {
+            System.out.println("Se encontró la serie " + serieBuscada.get());
+        }
+        else
+        {
+            System.out.println("No se encontró ninguna serie con ese nombre");
+        }
+    }
 }
 

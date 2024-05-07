@@ -21,7 +21,7 @@ public class Serie {
     private Categoria genero;
     private String actores;
     private String sinopsis;
-    @OneToMany(mappedBy = "serie") //serie se refiere al atributo en la clase Episodio
+    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER) //serie se refiere al atributo en la clase Episodio
     private List<Episodio> listaEpisodios;
 
     public Serie(){}
@@ -94,6 +94,12 @@ public class Serie {
         this.sinopsis = sinopsis;
     }
 
+    public void setEpisodios (List<Episodio> episodios)
+    {
+        episodios.forEach(e -> e.setSerie(this));
+        this.listaEpisodios = episodios;
+    }
+
     @Override
     public String toString() {
         return "Serie{" +
@@ -104,6 +110,7 @@ public class Serie {
                 ", Género=" + genero +
                 ", Actores='" + actores + '\'' +
                 ", Sinopsis='" + sinopsis + '\'' +
+                ", Episodios='" + listaEpisodios + '\'' +
                 '}';
     }
 }

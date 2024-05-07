@@ -1,15 +1,13 @@
 package com.aluracursos.screenmatch.principal;
 
 import ch.qos.logback.core.encoder.JsonEscapeUtil;
-import com.aluracursos.screenmatch.model.DatosSerie;
-import com.aluracursos.screenmatch.model.DatosTemporadas;
-import com.aluracursos.screenmatch.model.Episodio;
-import com.aluracursos.screenmatch.model.Serie;
+import com.aluracursos.screenmatch.model.*;
 import com.aluracursos.screenmatch.repository.SerieRepository;
 import com.aluracursos.screenmatch.service.ApiKey;
 import com.aluracursos.screenmatch.service.ConsumoAPI;
 import com.aluracursos.screenmatch.service.ConvierteDatos;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +34,8 @@ public class Principal {
                     2 - Buscar episodios
                     3 - Mostrar series buscadas
                     4 - Buscar serie por título (ya guardadas en DB)
+                    5 - Top 5 de series en DB
+                    6 - Buscar por categoría
                                   
                     0 - Salir
                     """;
@@ -56,7 +56,12 @@ public class Principal {
                 case 4:
                     buscarSeriesPorTitulo();
                     break;
-
+                case 5:
+                    listarTop5();
+                    break;
+                case 6:
+                    buscarSeriesPorCategoria();
+                    break;
                 case 0:
                     System.out.println("Cerrando la aplicación...");
                     break;
@@ -140,6 +145,23 @@ public class Principal {
         {
             System.out.println("No se encontró ninguna serie con ese nombre");
         }
+    }
+
+    private void listarTop5()
+    {
+        List<Serie> top5series = repositorio.findTop5ByOrderByEvaluacionDesc();
+        top5series.forEach(s -> System.out.println("Serie: " + s.getTitulo() + ". Evaluación: " + s.getEvaluacion()));
+    }
+
+    private void buscarSeriesPorCategoria()
+    {
+        //ingresar categoria, haciendo un foreach del enum?
+        System.out.println("Ingrese el género o categoría de serie");
+        var genero = teclado.nextLine();
+        var categoria = Categoria.fromCastellano(genero);
+        List<Serie> seriesPorCategoria = repositorio.findByGenero(categoria);
+        System.out.println("Series de " + categoria);
+        seriesPorCategoria.forEach(System.out::println);
     }
 }
 

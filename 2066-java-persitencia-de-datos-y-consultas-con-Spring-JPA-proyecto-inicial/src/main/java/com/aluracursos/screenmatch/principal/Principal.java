@@ -176,7 +176,8 @@ public class Principal {
         System.out.println("¿A partir de que evaluación? ");
         var evaluacion = teclado.nextDouble();
         teclado.nextLine();
-        List<Serie> filtroSeries = repositorio.findByTotalTemporadasLessThanEqualAndEvaluacionGreaterThanEqual(totalTemporadas, evaluacion);
+        //List<Serie> filtroSeries = repositorio.findByTotalTemporadasLessThanEqualAndEvaluacionGreaterThanEqual(totalTemporadas, evaluacion);
+        List<Serie> filtroSeries = repositorio.seriesPorTemporadaEvaluacionJPQL(totalTemporadas, evaluacion);
         System.out.println("*** Series filtradas ***");
         filtroSeries.forEach(s ->
                 System.out.println(s.getTitulo() + "  - evaluacion: " + s.getEvaluacion()));
